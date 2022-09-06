@@ -1,0 +1,57 @@
+---
+# User and group
+erigon_user: erigon
+erigon_group: "{{ erigon_user }}"
+# default to use the private ip in cloud, set this to true to use the public ip
+erigon_discovery_public_ip: "false"
+erigon_ansible_run_option: install
+
+# Directory paths
+erigon_version: "v2022.08.03"
+erigon_base_dir: "/opt/erigon"
+erigon_node_private_key_file: ""
+erigon_data_dir: "{{ erigon_base_dir }}/data"
+erigon_log_dir: "/var/log/erigon"
+erigon_ipc_file: "{{ erigon_base_dir }}/erigon.ipc"
+erigon_profile_file: "/etc/profile.d/erigon-path.sh"
+
+erigon_network_id: 1
+erigon_chain: mainnet
+erigon_healthcheck: "true"
+erigon_identity: "erigonNode"
+erigon_max_peers: 50
+erigon_p2p_port: 30303
+# --nat extip:{{erigon_host_ip}}
+erigon_host_ip: ""
+erigon_default_ip: "127.0.0.1"
+erigon_log_verbosity: 3
+erigon_insecure_unlock: 0
+erigon_account_password_file: ""
+erigon_cmdline_args: ""
+# user defined list of cmd line args as a string
+erigon_user_cmdline_args: ""
+
+# http rpc
+erigon_http_enabled: "true"
+erigon_http_compression: "true"
+erigon_http_host: "127.0.0.1"
+erigon_http_port: 8545
+erigon_http_api: ["admin", "db", "eth", "debug", "miner", "net", "txpool", "web3", "erigon", "engine"]
+erigon_http_cors_origins: ["*"]
+erigon_http_vhosts: ["*"]
+# ws
+erigon_ws_enabled: "true"
+erigon_ws_compression: "true"
+# miner
+erigon_miner_enabled: "false"
+erigon_miner_gaslimit: 30000000
+erigon_miner_etherbase: 0
+erigon_miner_extradata: ""
+erigon_miner_sigfile: ""
+# metrics 
+# --pprof --pprof.addr 0.0.0.0 --pprof.port 9545 \
+erigon_metrics_enabled: "true"
+erigon_metrics_host: "0.0.0.0"
+erigon_metrics_port: 9545
+erigon_metrics_pprof_port: 9546
+

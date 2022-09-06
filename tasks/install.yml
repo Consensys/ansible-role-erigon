@@ -1,0 +1,86 @@
+---
+- name: Ensure erigon group exists
+  group:
+    name: "{{ erigon_group }}"
+    state: present
+  become: true
+
+- name: Create erigon user
+  user:
+    comment:  erigon client user
+    name: "{{ erigon_user }}"
+    group: "{{ erigon_group }}"
+  become: true
+
+- name: Create base directory
+  file:
+    path: "{{ erigon_base_dir }}"
+    state: directory
+    owner: "{{ erigon_user }}"
+    group: "{{ erigon_group }}"
+  become: true
+
+- name: Create data directory
+  file:
+    path: "{{ erigon_data_dir }}"
+    state: directory
+    owner: "{{ erigon_user }}"
+    group: "{{ erigon_group }}"
+    recurse: yes
+  become: true
+
+- name: Create log directory
+  file:
+    path: "{{ erigon_log_dir }}"
+    state: directory
+    owner: "{{ erigon_user }}"
+    group: "{{ erigon_group }}"
+  become: true
+
+- name: Setup logrotate
+  template:
+    src: "logrotate/erigon"
+    dest: "/etc/logrotate.d/erigon"
+    owner: root
+    group: root
+    mode: 0644    
+  become: true
+
+- name: Install docker-compose
+  pip:
+    name: docker-compose
+    state: "present"
+    executable: /usr/bin/pip3
+  become: true
+
+- name: Create cmd line args
+  include_tasks: "cmdline.yml"
+
+- name: Create docker-compose.yml file
+  template:
+    src: erigon-compose.yml.j2
+    dest: "{{ erigon_base_dir }}/docker-compose.yml"
+    owner: "{{ erigon_user }}"
+    group: "{{ erigon_group }}"
+  become: true
+  
+- name: Give access to docker.sock
+  acl:
+    path: /var/run/docker.sock
+    entity: "{{ erigon_user }}"
+    etype: user
+    permissions: rw
+    state: present
+  become: yes
+
+- block:
+    - name: Start erigon
+      community.docker.docker_compose:
+        project_src: "{{ erigon_base_dir }}"
+        state: present
+
+  rescue:
+    - name: Retry start
+      community.docker.docker_compose:
+        project_src: "{{ erigon_base_dir }}"
+        state: present

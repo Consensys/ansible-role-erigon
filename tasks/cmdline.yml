@@ -1,0 +1,67 @@
+---
+- name: Add basics to the cmdline_args
+  set_fact:
+    erigon_cmdline_args: >
+      {{erigon_cmdline_args}}
+      --verbosity={{erigon_log_verbosity}}
+      --datadir=/home/erigon/.local/share/erigon
+      --port={{erigon_p2p_port}}
+      --identity={{erigon_identity}}
+      --networkid={{erigon_network_id}}
+      --chain={{erigon_chain}}
+
+- name: Add nodekey to the cmdline_args
+  set_fact:
+    erigon_cmdline_args: >
+      {{erigon_cmdline_args}}
+      --nodekey={{erigon_node_private_key_file}}
+  when: erigon_node_private_key_file != ""
+
+- name: Add metrics to the cmdline_args
+  set_fact:
+    erigon_cmdline_args: >
+      {{erigon_cmdline_args}}
+      --metrics --pprof
+      --metrics.addr={{erigon_metrics_host}}
+      --metrics.port={{erigon_metrics_port}}
+      --pprof.addr={{erigon_metrics_host}}
+      --pprof.port={{erigon_metrics_pprof_port}}
+  when: erigon_metrics_enabled|bool == True
+
+- name: Add miner to the cmdline_args
+  set_fact:
+    erigon_cmdline_args: >
+      {{erigon_cmdline_args}}
+      --mine
+      --miner.gaslimit={{erigon_miner_gaslimit}}
+      --miner.etherbase={{erigon_miner_etherbase}}
+      --miner.extradata={{erigon_miner_extradata}}
+  when: erigon_miner_enabled|bool == True
+
+- name: Add RPC to the cmdline_args
+  set_fact:
+    erigon_cmdline_args: >
+      {{erigon_cmdline_args}}
+      --http --http.compression
+      --ws --ws.compression
+      --http.addr={{erigon_http_host}}
+      --http.port={{erigon_http_port}}
+      --http.corsdomain '{{erigon_http_cors_origins|map('to_json')|join(',')}}'
+      --http.vhosts '{{erigon_http_vhosts|map('to_json')|join(',')}}'
+      --http.api {{erigon_http_api|map('to_json')|join(',')}}
+  when: erigon_http_enabled|bool == True
+
+- name: Add custom cmdline_args to the list
+  set_fact:
+    erigon_cmdline_args: >
+      {{erigon_cmdline_args}}
+      {{erigon_user_cmdline_args}}
+  when: erigon_user_cmdline_args != ""
+
+- name: Sanitize cmdline_args
+  set_fact:
+    erigon_cmdline_args: "{{erigon_cmdline_args | replace('\n', '') | replace('\"', '')}}"
+
+- name: Show cmdline_args
+  debug:
+    msg: "{{erigon_cmdline_args}}"

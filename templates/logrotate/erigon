@@ -1,0 +1,9 @@
+{{ erigon_log_dir }}/*.log {
+    rotate 14
+    notifempty
+    missingok
+    size 250M
+    daily
+    copytruncate
+    compress
+}

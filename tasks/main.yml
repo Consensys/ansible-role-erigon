@@ -1,0 +1,13 @@
+---
+- name: Get IP address to bind to if not provided
+  include_tasks: "network.yml"
+  when: not erigon_host_ip
+
+- name: Install erigon
+  include_tasks: "install.yml"
+  when: (erigon_ansible_run_option == "install")
+
+- name: Uninstall erigon
+  include_tasks: "remove.yml"
+  when: (erigon_ansible_run_option == "remove") or
+        (erigon_ansible_run_option == "uninstall")

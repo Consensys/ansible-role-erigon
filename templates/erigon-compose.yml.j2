@@ -1,0 +1,22 @@
+---
+version: '3'
+
+services:
+
+  erigon:
+    image: "thorax/erigon:{{erigon_version}}"
+    container_name: erigon
+    labels:
+      service_name: erigon
+    command: "erigon {{erigon_cmdline_args}}"
+    volumes:
+      - {{erigon_data_dir}}:/home/erigon/.local/share/erigon
+      - /var/log/:/var/log/:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "{{erigon_p2p_port}}:{{erigon_p2p_port}}/tcp"
+      - "{{erigon_p2p_port}}:{{erigon_p2p_port}}/udp"
+      - "{{erigon_http_port}}:{{erigon_http_port}}/tcp"
+      - "{{erigon_metrics_port}}:{{erigon_metrics_port}}/tcp"
+      - "{{erigon_metrics_pprof_port}}:{{erigon_metrics_pprof_port}}/tcp"
+    restart: unless-stopped
