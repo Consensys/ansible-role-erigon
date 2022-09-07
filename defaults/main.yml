@@ -7,7 +7,7 @@ erigon_discovery_public_ip: "false"
 erigon_ansible_run_option: install
 
 # Directory paths
-erigon_version: "v2022.08.03"
+# erigon_version: "v2022.08.03"
 erigon_base_dir: "/opt/erigon"
 erigon_node_private_key_file: ""
 erigon_data_dir: "{{ erigon_base_dir }}/data"
@@ -36,7 +36,19 @@ erigon_http_enabled: "true"
 erigon_http_compression: "true"
 erigon_http_host: "127.0.0.1"
 erigon_http_port: 8545
-erigon_http_api: ["admin", "db", "eth", "debug", "miner", "net", "txpool", "web3", "erigon", "engine"]
+erigon_http_api:
+  [
+    "admin",
+    "db",
+    "eth",
+    "debug",
+    "miner",
+    "net",
+    "txpool",
+    "web3",
+    "erigon",
+    "engine",
+  ]
 erigon_http_cors_origins: ["*"]
 erigon_http_vhosts: ["*"]
 # ws
@@ -48,10 +60,9 @@ erigon_miner_gaslimit: 30000000
 erigon_miner_etherbase: 0
 erigon_miner_extradata: ""
 erigon_miner_sigfile: ""
-# metrics 
+# metrics
 # --pprof --pprof.addr 0.0.0.0 --pprof.port 9545 \
 erigon_metrics_enabled: "true"
 erigon_metrics_host: "0.0.0.0"
 erigon_metrics_port: 9545
 erigon_metrics_pprof_port: 9546
-
