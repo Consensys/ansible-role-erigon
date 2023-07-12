@@ -1,0 +1,28 @@
+---
+- name: Create erigon systemd service
+  template:
+    src: "{{ erigon_systemd_template }}"
+    dest: "{{ erigon_systemd_dir }}/erigon.service"
+    owner: "root"
+    group: "root"
+  become: true
+  register: systemd_file
+
+- name: Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    erigon_state_updates: "{{ erigon_state_updates + ['erigon.systemd_file'] }}"
+  when: systemd_file is changed
+
+- name: Reload systemd to reread configs
+  systemd:
+    daemon_reload: yes
+  become: true
+  when: systemd_file is changed
+
+- name: Enable and start erigon service
+  systemd:
+    name: erigon
+    state: "{{ erigon_systemd_state }}"
+    enabled: true
+  become: true
+  when: erigon_state_updates|length > 0

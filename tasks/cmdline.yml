@@ -4,7 +4,7 @@
     erigon_cmdline_args: >
       {{erigon_cmdline_args}}
       --verbosity={{erigon_log_verbosity}}
-      --datadir=/home/erigon/.local/share/erigon
+      --datadir={{erigon_data_dir}}
       --port={{erigon_p2p_port}}
       --identity={{erigon_identity}}
       --networkid={{erigon_network_id}}

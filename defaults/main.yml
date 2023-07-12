@@ -3,17 +3,27 @@
 erigon_user: erigon
 erigon_group: "{{ erigon_user }}"
 # default to use the private ip in cloud, set this to true to use the public ip
-erigon_discovery_public_ip: "false"
-erigon_ansible_run_option: install
+erigon_discovery_public_ip: "true"
+# internal state to maintain idempotency
+erigon_state_updates: []
+erigon_architecture: "amd64"
+# Version to install
+erigon_download_url: "https://github.com/ledgerwatch/erigon/releases/download/v{{erigon_version}}/erigon_{{erigon_version}}_linux_{{erigon_architecture}}.tar.gz"
+
+# Managed service config
+erigon_systemd_state: restarted
+erigon_systemd_template: erigon.service.j2
+erigon_systemd_dir: /etc/systemd/system
 
 # Directory paths
-# erigon_version: "v2022.08.03"
 erigon_base_dir: "/opt/erigon"
+erigon_install_dir: "{{ erigon_base_dir }}/{{erigon_version}}"
+erigon_current_dir: "{{ erigon_base_dir }}/current"
 erigon_node_private_key_file: ""
+erigon_config_dir: "/etc/erigon"
 erigon_data_dir: "{{ erigon_base_dir }}/data"
 erigon_log_dir: "/var/log/erigon"
 erigon_ipc_file: "{{ erigon_base_dir }}/erigon.ipc"
-erigon_profile_file: "/etc/profile.d/erigon-path.sh"
 
 erigon_network_id: 1
 erigon_chain: mainnet

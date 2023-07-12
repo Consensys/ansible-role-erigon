@@ -12,29 +12,18 @@
     group: "{{ erigon_group }}"
   become: true
 
-- name: Create base directory
+- name: Create directories
   file:
-    path: "{{ erigon_base_dir }}"
+    path: "{{ item }}"
     state: directory
     owner: "{{ erigon_user }}"
     group: "{{ erigon_group }}"
-  become: true
-
-- name: Create data directory
-  file:
-    path: "{{ erigon_data_dir }}"
-    state: directory
-    owner: "{{ erigon_user }}"
-    group: "{{ erigon_group }}"
-    recurse: yes
-  become: true
-
-- name: Create log directory
-  file:
-    path: "{{ erigon_log_dir }}"
-    state: directory
-    owner: "{{ erigon_user }}"
-    group: "{{ erigon_group }}"
+  loop:
+    - "{{ erigon_base_dir }}"
+    - "{{ erigon_install_dir }}"    
+    - "{{ erigon_config_dir }}"
+    - "{{ erigon_data_dir }}"
+    - "{{ erigon_log_dir }}"
   become: true
 
 - name: Setup logrotate
@@ -46,41 +35,38 @@
     mode: 0644    
   become: true
 
-- name: Install docker-compose
-  pip:
-    name: docker-compose
-    state: "present"
-    executable: /usr/bin/pip3
-  become: true
-
-- name: Create cmd line args
-  include_tasks: "cmdline.yml"
-
-- name: Create docker-compose.yml file
-  template:
-    src: erigon-compose.yml.j2
-    dest: "{{ erigon_base_dir }}/docker-compose.yml"
+- name: Extract erigon source to install directory
+  unarchive:
+    src: "{{ erigon_download_url }}"
+    remote_src: "{{ true }}"
+    dest: "{{ erigon_install_dir }}"
     owner: "{{ erigon_user }}"
     group: "{{ erigon_group }}"
+    mode: '0775'
   become: true
-  
-- name: Give access to docker.sock
-  acl:
-    path: /var/run/docker.sock
-    entity: "{{ erigon_user }}"
-    etype: user
-    permissions: rw
-    state: present
-  become: yes
+  register: extract_src
 
-- block:
-    - name: Start erigon
-      community.docker.docker_compose:
-        project_src: "{{ erigon_base_dir }}"
-        state: present
+- name: Create a symlink to current
+  file:
+    src: "{{ erigon_install_dir }}/"
+    dest: "{{ erigon_current_dir }}"
+    state: link
+  register: create_symlink
+  become: true
 
-  rescue:
-    - name: Retry start
-      community.docker.docker_compose:
-        project_src: "{{ erigon_base_dir }}"
-        state: present
+- name: Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    erigon_state_updates: "{{ erigon_state_updates + ['erigon.install_dir'] }}"
+  when: >
+    extract_src is changed or
+    create_symlink is changed
+
+# will throw error the first time you install since the service isnt present
+- name: Stop erigon systemd service if running
+  service:
+    name: erigon
+    state: stopped
+  when: extract_src is changed 
+  become: true
+  ignore_errors: true
+
