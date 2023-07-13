@@ -8,7 +8,7 @@ erigon_discovery_public_ip: "true"
 erigon_state_updates: []
 erigon_architecture: "amd64"
 # Version to install
-erigon_download_url: "https://github.com/ledgerwatch/erigon/releases/download/v{{erigon_version}}/erigon_{{erigon_version}}_linux_{{erigon_architecture}}.tar.gz"
+erigon_download_url: "https://github.com/ledgerwatch/erigon/releases/download/{{erigon_version}}/erigon_{{erigon_version[1:]}}_linux_{{erigon_architecture}}.tar.gz"
 
 # Managed service config
 erigon_systemd_state: restarted
