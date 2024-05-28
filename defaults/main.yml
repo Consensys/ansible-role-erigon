@@ -33,7 +33,6 @@ erigon_max_peers: 50
 erigon_p2p_port: 30303
 # --nat extip:{{erigon_host_ip}}
 erigon_host_ip: ""
-erigon_default_ip: "127.0.0.1"
 erigon_log_verbosity: 3
 erigon_insecure_unlock: 0
 erigon_account_password_file: ""
