@@ -11,3 +11,6 @@
 
 - name: Create erigon service
   include_tasks: "service.yml"
+
+- name: Set version info on a local file
+  include_tasks: "tags.yml"
