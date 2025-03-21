@@ -24,6 +24,7 @@ erigon_config_dir: "/etc/erigon"
 erigon_data_dir: "{{ erigon_base_dir }}/data"
 erigon_log_dir: "/var/log/erigon"
 erigon_ipc_file: "{{ erigon_base_dir }}/erigon.ipc"
+erigon_version_info_file: "{{ erigon_config_dir }}/elc_version"
 
 erigon_network_id: 1
 erigon_chain: mainnet

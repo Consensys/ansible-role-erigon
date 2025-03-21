@@ -1,0 +1,8 @@
+- name: Set the version on a local file so it can be used by other automation
+  copy: 
+    content: "{{erigon_version[1:]}}_linux_{{erigon_architecture}}"
+    dest: "{{ erigon_version_info_file }}"
+    owner: "{{ erigon_user }}"
+    group: "{{ erigon_group }}"
+    mode: 0644    
+  become: true    
