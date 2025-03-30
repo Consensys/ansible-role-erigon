@@ -7,7 +7,7 @@ User={{ erigon_user }}
 Group={{ erigon_group }}
 Environment=HOME=/home/{{ erigon_user }}
 Type=simple
-ExecStart=/bin/sh -c "{{ erigon_current_dir }}/erigon --nat extip:{{erigon_host_ip}} {{erigon_cmdline_args}} >> {{erigon_log_dir}}/erigon.log 2>&1"
+ExecStart=/bin/sh -c "{{ erigon_current_dir }}/erigon --nat extip:{{erigon_host_ip}} {{erigon_internal_cmdline_args}} >> {{erigon_log_dir}}/erigon.log 2>&1"
 SuccessExitStatus=143
 Restart=on-failure
 RestartSec=10s
