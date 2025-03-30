@@ -30,6 +30,9 @@ Ansible role that will install, configure and runs Erigon
 
 All variables which can be overridden are stored in [defaults/main.yml](defaults/main.yml) file. By and large these variables are configuration options. 
 
+> :warning: **Please do not override _erigon_internal_cmdline_args**: Be very careful here! Only use `erigon_cmdline_args` which append to `_erigon_internal_cmdline_args`
+
+
 ### Example Playbook
 
 1. **Install role from Ansible Galaxy**

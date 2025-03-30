@@ -37,9 +37,9 @@ erigon_host_ip: ""
 erigon_log_verbosity: 3
 erigon_insecure_unlock: 0
 erigon_account_password_file: ""
-erigon_cmdline_args: ""
+_erigon_internal_cmdline_args: ""
 # user defined list of cmd line args as a string
-erigon_user_cmdline_args: ""
+erigon_cmdline_args: []
 
 # http rpc
 erigon_http_enabled: "true"
