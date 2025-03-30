@@ -1,8 +1,8 @@
 ---
 - name: Add basics to the cmdline_args
   set_fact:
-    erigon_internal_cmdline_args: >
-      {{erigon_internal_cmdline_args}}
+    _erigon_internal_cmdline_args: >
+      {{_erigon_internal_cmdline_args}}
       --verbosity={{erigon_log_verbosity}}
       --datadir={{erigon_data_dir}}
       --port={{erigon_p2p_port}}
@@ -12,15 +12,15 @@
 
 - name: Add nodekey to the cmdline_args
   set_fact:
-    erigon_internal_cmdline_args: >
-      {{erigon_internal_cmdline_args}}
+    _erigon_internal_cmdline_args: >
+      {{_erigon_internal_cmdline_args}}
       --nodekey={{erigon_node_private_key_file}}
   when: erigon_node_private_key_file != ""
 
 - name: Add metrics to the cmdline_args
   set_fact:
-    erigon_internal_cmdline_args: >
-      {{erigon_internal_cmdline_args}}
+    _erigon_internal_cmdline_args: >
+      {{_erigon_internal_cmdline_args}}
       --metrics --pprof
       --metrics.addr={{erigon_metrics_host}}
       --metrics.port={{erigon_metrics_port}}
@@ -30,8 +30,8 @@
 
 - name: Add miner to the cmdline_args
   set_fact:
-    erigon_internal_cmdline_args: >
-      {{erigon_internal_cmdline_args}}
+    _erigon_internal_cmdline_args: >
+      {{_erigon_internal_cmdline_args}}
       --mine
       --miner.gaslimit={{erigon_miner_gaslimit}}
       --miner.etherbase={{erigon_miner_etherbase}}
@@ -40,8 +40,8 @@
 
 - name: Add RPC to the cmdline_args
   set_fact:
-    erigon_internal_cmdline_args: >
-      {{erigon_internal_cmdline_args}}
+    _erigon_internal_cmdline_args: >
+      {{_erigon_internal_cmdline_args}}
       --http --http.compression
       --ws --ws.compression
       --http.addr={{erigon_http_host}}
@@ -53,15 +53,15 @@
 
 - name: Add custom cmdline_args to the list
   set_fact:
-    erigon_internal_cmdline_args: >
-      {{erigon_internal_cmdline_args}}
-      {{erigon_cmdline_args}}
+    _erigon_internal_cmdline_args: >
+      {{_erigon_internal_cmdline_args}}
+      {{erigon_cmdline_args | join(' ') }}
   when: erigon_cmdline_args != ""
 
 - name: Sanitize cmdline_args
   set_fact:
-    erigon_internal_cmdline_args: "{{erigon_internal_cmdline_args | replace('\n', '') | replace('\"', '')}}"
+    _erigon_internal_cmdline_args: "{{_erigon_internal_cmdline_args | replace('\n', '') | replace('\"', '')}}"
 
 - name: Show cmdline_args
   debug:
-    msg: "{{erigon_internal_cmdline_args}}"
+    msg: "{{_erigon_internal_cmdline_args}}"
