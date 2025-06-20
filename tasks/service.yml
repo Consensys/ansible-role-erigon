@@ -23,6 +23,6 @@
   systemd:
     name: erigon
     state: "{{ erigon_systemd_state }}"
-    enabled: true
+    enabled: "{{ (erigon_systemd_state!='stopped') | ternary('true', 'false') | bool }}"
   become: true
   when: erigon_state_updates|length > 0
