@@ -1,4 +1,13 @@
 ---
+
+- name: Fetch architecture of the host
+  debug:
+    var: ansible_facts.architecture
+
+- name: Set system architecture to download appropriate binary
+  set_fact:
+    erigon_architecture: "{{ 'arm64' if ansible_facts.architecture == 'aarch64' else 'amd64' }}"
+
 - name: Install erigon
   include_tasks: "install.yml"
 
