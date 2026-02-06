@@ -1,7 +1,41 @@
 ---
+- name: install | Lookup erigon user
+  getent:
+    database: passwd
+    key: "{{ erigon_user }}"
+  register: erigon_user_entry
+  failed_when: false
+
+- name: install | Extract current UID (only if user exists)
+  set_fact:
+    erigon_current_uid: "{{ erigon_user_entry.ansible_facts.getent_passwd[erigon_user][1] | int }}"
+  when: not erigon_user_entry.failed
+
+- name: install | Determine if UID update is needed
+  set_fact:
+    erigon_uid_needs_update: "{{ erigon_current_uid != erigon_uid }}"
+  when: not erigon_user_entry.failed
+
+- name: install | Stop enabled erigon services if UID needs update
+  service:
+    name: "erigon"
+    state: stopped
+  when:
+    - not erigon_user_entry.failed
+    - erigon_uid_needs_update
+  become: true
+
+- name: install | Set updated optionally to trigger a systemd restart at the end
+  set_fact:
+    erigon_state_updates: "{{ erigon_state_updates + ['erigon.uid'] }}"
+  when:
+    - not erigon_user_entry.failed
+    - erigon_uid_needs_update
+
 - name: Ensure erigon group exists
   group:
     name: "{{ erigon_group }}"
+    gid: "{{ erigon_gid }}"    
     state: present
   become: true
 
@@ -9,6 +43,7 @@
   user:
     comment:  erigon client user
     name: "{{ erigon_user }}"
+    uid: "{{ erigon_uid }}"
     group: "{{ erigon_group }}"
   become: true
 

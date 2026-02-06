@@ -2,6 +2,9 @@
 # User and group
 erigon_user: erigon
 erigon_group: "{{ erigon_user }}"
+erigon_uid: 1514
+erigon_gid: 1514
+
 # default to use the private ip in cloud, set this to true to use the public ip
 erigon_discovery_public_ip: "true"
 # internal state to maintain idempotency
